@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Top Headlins</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="jquery-3.6.0.js"></script>
+    <style>
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 2fr));
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <nav class="navbar navbar-light bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" style="color: cornsilk;" href="/main.html">
+                NEWS69
+            </a>
+        </div>
+    </nav>
+    <div class="container my-3" id='1'>
+    </div>
+</body>
+<script>
+    const RSS_URL = localStorage.getItem('url');
+    $(document).ready(
+        () => {
+            $.ajax(RSS_URL, {
+                method: 'GET',
+                accepts: {
+                    xml: "application/rss+xml"
+                },
+                dataType: "xml",
+
+                success: function (data) {
+                    $(data)
+                        .find("item")
+                        .each(function () {
+                            const el = $(this);
+                            var txt = el.find("description").text();
+                            var arr = txt.split(">");
+                            const template = `
+                                <div class='mx-2 my-1'>
+                                    <div class="card">
+                                        <img src="${arr[0].slice(50,)}" class="card-img-top" alt="...">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${el.find("title").text()}</h5>
+                                            <p class="card-text">${arr[1]}</p>
+                                            <h9 class="card-text">${el.find('pubDate').text().slice(0,25)}</h9><br/>
+                                            <a href="${el.find("link").text()}" class="btn btn-outline-info">Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                `;
+
+                            $('#1').append(template);
+                        }
+                    );
+                }
+            });
+        }
+    )
+
+</script>
+
+</html>
